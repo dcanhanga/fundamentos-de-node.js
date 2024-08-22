@@ -1,0 +1,6 @@
+{
+  "name": "fundamentos-de-node",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Fundamentos de node js, construção de uma api rest com módulos nativos do node.js"
+}
