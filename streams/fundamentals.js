@@ -1,5 +1,5 @@
 // process.stdin.pipe(process.stdout)
-import {Readable, Writable } from 'node:stream'
+import {Readable, Writable, Transform } from 'node:stream'
 
 class OneToHundredStream extends Readable {
   index = 1
@@ -27,5 +27,14 @@ class MultiplierByTenStream extends Writable {
   }
 }
 
-new OneToHundredStream().pipe(new MultiplierByTenStream())
+class InverseNumberStream extends Transform {
+  _transform(chunk, encoding, callback) {
+    const transformed = Number(chunk.toString()) * -1
+    callback(null, Buffer.from(String(transformed)))
+    // primeiro parâmetro é o erro
+  }
+}
 
+new OneToHundredStream().pipe(new InverseNumberStream()).pipe(new MultiplierByTenStream())
+
+// A stream de leitura, conseguimos ler dados somente quando ela é lida, e não quando ela é escrita. A stream de escrita, conseguimos escrever dados somente quando ela é escrita, e não quando ela é lida. A stream de transformação, conseguimos ler dados, transformá-los e escrever dados. A stream de transformação é utilizado no meio de duas stream
