@@ -37,4 +37,3 @@ class InverseNumberStream extends Transform {
 
 new OneToHundredStream().pipe(new InverseNumberStream()).pipe(new MultiplierByTenStream())
 
-// A stream de leitura, conseguimos ler dados somente quando ela é lida, e não quando ela é escrita. A stream de escrita, conseguimos escrever dados somente quando ela é escrita, e não quando ela é lida. A stream de transformação, conseguimos ler dados, transformá-los e escrever dados. A stream de transformação é utilizado no meio de duas stream
