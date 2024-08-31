@@ -7,8 +7,11 @@ const server = http.createServer(async (req, res) => {
 
   const { url, method } = req;
   const route = routes.find((route) => {
-    return (url === route.url && method === route.method)})
+    return ( route.url.test(url) && method === route.method)})
   if (route) {
+    const routeParams = req.url.match(route.url)
+
+    console.log(routeParams)
     return route.handler(req, res)
   }
  return res.writeHead(404).end()
