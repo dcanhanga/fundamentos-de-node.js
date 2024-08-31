@@ -1,23 +1,27 @@
-import { buildRoutePath } from "./build-route-path.js"
+import { buildRoutePath } from "./utils/build-route-path.js"
 import { Database } from "./database.js"
 import { randomUUID } from 'node:crypto'
 
 const database = new Database()
 
-/**
- * @type {Array<{method: string, url: string, handler: (req: import('http').IncomingMessage, res: import('http').ServerResponse) => void}>}
- */
 export const routes = [
   {
     method: 'GET',
     url: buildRoutePath('/users'),
-    /**
-     * @param {import('http').IncomingMessage}
-     * @param {import('http').ServerResponse} HTTP.
-     * @returns {void}
-     */
+
     handler: (req, res) => {
-      const users = database.select('users')
+      const search = req.query.search
+      const users = database.select('users', {
+        name: search, email: search})
+      return res.end(JSON.stringify(users))
+    }
+  },
+    {
+    method: 'GET',
+    url: buildRoutePath('/users/:id'),
+
+    handler: (req, res) => {
+      const users = database.select('users', {id: req.params.id})
       return res.end(JSON.stringify(users))
     }
   },
@@ -43,14 +47,20 @@ export const routes = [
    {
     method: 'DELETE',
     url: buildRoutePath('/users/:id'),
-    /**
-     * @param {import('http').IncomingMessage}
-     * @param {import('http').ServerResponse}
-     * @returns {void}
-     */
-    handler: (req, res) => {
 
-      return res.writeHead(201).end()
+    handler: (req, res) => {
+      database.delete('users', req.params.id)
+      return res.writeHead(204).end()
+    }
+  },
+      {
+    method: 'PUT',
+    url: buildRoutePath('/users/:id'),
+
+        handler: (req, res) => {
+      const { name, email } = req.body
+      database.update('users',req.params.id, { name, email})
+      return res.writeHead(204).end()
     }
   }
 ]
